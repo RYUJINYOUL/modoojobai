@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { db } from '@/firebase';
 import { doc, getDoc, collection, addDoc, serverTimestamp, query, where, getDocs, orderBy } from 'firebase/firestore';
@@ -29,14 +29,7 @@ import {
   BookOpen
 } from 'lucide-react';
 
-
-
-// 공통 스타일 정의
-const sectionTitleClass = "text-2xl font-extrabold text-gray-900 mb-6 border-b-2 border-indigo-100 pb-2 flex items-center gap-3";
-const cardContainerClass = "space-y-4";
-const detailCardClass = "p-5 bg-white rounded-xl shadow-sm border border-gray-100 transition-all hover:shadow-md";
-
-export default function ApplicationSubmitPage() {
+function ApplicationSubmitContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const jobId = searchParams.get('jobId');
@@ -723,5 +716,21 @@ export default function ApplicationSubmitPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function ApplicationSubmitPage() {
+  return (
+    // Suspense로 감싸서 useSearchParams를 사용하는 컴포넌트의 렌더링을 지연시킵니다.
+    <Suspense fallback={
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center p-12 bg-white rounded-3xl shadow-xl">
+          <Loader2 className="w-16 h-16 animate-spin text-indigo-600 mx-auto mb-6" />
+          <p className="text-gray-600 text-xl font-semibold">페이지를 불러오는 중...</p>
+        </div>
+      </div>
+    }>
+      <ApplicationSubmitContent />
+    </Suspense>
   );
 }
