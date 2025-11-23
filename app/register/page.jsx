@@ -1,4 +1,4 @@
-import ModernSignupPage from "@/components/ModernSignupPage"
+import ModernSignupPage from "@/components/Modernsignuppage"
 
 
 
