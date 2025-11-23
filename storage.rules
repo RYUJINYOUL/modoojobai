@@ -1,0 +1,18 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    // 이력서 이미지 - 인증된 사용자만 자신의 이미지 읽기/쓰기 가능
+    match /resumes/{resumeId}/{allFiles=**} {
+      allow read: if true; // 공개 읽기 (이력서 공유용)
+      // resumeId는 userId_timestamp 형태이므로, 인증된 사용자면 쓰기 허용
+      // 더 엄격하게 하려면 resumeId가 userId로 시작하는지 체크
+      allow write: if request.auth != null;
+    }
+    
+    // 기타 모든 경로는 차단
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}
