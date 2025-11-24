@@ -181,8 +181,8 @@ export default function ProfilePage() {
                   <div className="flex items-center gap-4">
                     <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
                       <img 
-                        src="/logos/m1.png" 
-                        alt="모두트리" 
+                        src="/Image/logo.png" 
+                        alt="모두잡AI" 
                         className="w-7 h-7"
                       />
                     </div>

@@ -17,79 +17,110 @@ try {
     firebase.initializeApp(firebaseConfig);
     const messaging = firebase.messaging();
 
+    // 알림 권한 상태 확인
+    console.log('[SW] 알림 권한 상태:', Notification.permission);
+
     // 1. 백그라운드 메시지 처리 (FCM 서버에서 보낸 메시지 처리)
     messaging.onBackgroundMessage((payload) => {
         console.log('[SW] 백그라운드 메시지:', payload);
 
         const notificationTitle = payload.notification?.title || '알림';
         
-        // ✨ 개선된 알림 옵션 - 검정 배경과 더 나은 스타일링
+        // ✨ 개선된 알림 옵션 - 아이콘 경로 수정
         const notificationOptions = {
             body: payload.notification?.body || '',
-            icon: '/icon.png',
-            badge: '/icon.png',
+            icon: '/Image/logo.png', // 실제 존재하는 아이콘 경로로 변경
+            badge: '/Image/logo.png',
             image: payload.notification?.image,
-            requireInteraction: true, // 클릭 전까지 계속 표시
+            requireInteraction: true,
             silent: false,
             vibrate: [200, 100, 200],
+            tag: payload.notification?.tag || 'fcm-notification', // 중복 알림 방지
             actions: [
                 {
                     action: 'view',
-                    title: '확인하기',
-                    icon: '/icon.png'
+                    title: '확인하기'
                 },
                 {
                     action: 'close',
-                    title: '닫기',
-                    icon: '/icon.png'
+                    title: '닫기'
                 }
             ],
             data: { 
                 link: payload.data?.link,
-                timestamp: Date.now()
+                timestamp: Date.now(),
+                originalPayload: payload
             }
         };
+
+        console.log('[SW] FCM 백그라운드 알림 표시 시도:', notificationTitle, notificationOptions);
 
         self.registration.showNotification(notificationTitle, notificationOptions);
     });
 
     // 2. 원시 Push 이벤트 처리 (DevTools 테스트 메시지 처리)
     self.addEventListener('push', (event) => {
-        // payload.data가 없거나 알 수 없는 경우에 대비하여 기본값 설정
-        const data = event.data.json();
-        console.log('[SW] 원시 Push 이벤트 수신:', data);
-
-        const title = data.notification?.title || '테스트 알림';
+        console.log('[SW] Push 이벤트 수신됨');
         
-        // ✨ 개선된 테스트 알림 옵션
+        if (!event.data) {
+            console.log('[SW] Push 이벤트에 데이터가 없음');
+            return;
+        }
+
+        let data;
+        try {
+            data = event.data.json();
+            console.log('[SW] 원시 Push 이벤트 수신:', data);
+        } catch (error) {
+            console.error('[SW] Push 데이터 파싱 실패:', error);
+            // 기본 알림 표시
+            data = {
+                notification: {
+                    title: '새 알림',
+                    body: '알림이 도착했습니다.'
+                }
+            };
+        }
+
+        const title = data.notification?.title || '새 알림';
+        
+        // ✨ 개선된 테스트 알림 옵션 - 아이콘 경로 수정
         const options = {
-            body: data.notification?.body || '개발자 도구 테스트 메시지입니다.',
-            icon: '/icon.png',
-            badge: '/icon.png',
-            requireInteraction: true, // 클릭 전까지 계속 표시
+            body: data.notification?.body || '알림이 도착했습니다.',
+            icon: '/Image/logo.png', // 실제 존재하는 아이콘 경로로 변경
+            badge: '/Image/logo.png',
+            requireInteraction: true,
             silent: false,
             vibrate: [200, 100, 200],
+            tag: data.notification?.tag || 'default-notification', // 중복 알림 방지
             actions: [
                 {
                     action: 'view',
-                    title: '확인하기',
-                    icon: '/icon.png'
+                    title: '확인하기'
                 },
                 {
                     action: 'close',
-                    title: '닫기',
-                    icon: '/icon.png'
+                    title: '닫기'
                 }
             ],
             data: { 
-                link: data.data?.link || '/default-path',
-                timestamp: Date.now()
+                link: data.data?.link || '/',
+                timestamp: Date.now(),
+                originalData: data
             }
         };
+
+        console.log('[SW] 알림 표시 시도:', title, options);
 
         // 알림 표시를 예약하고 워커가 종료되지 않도록 대기
         event.waitUntil(
             self.registration.showNotification(title, options)
+                .then(() => {
+                    console.log('[SW] 알림 표시 성공');
+                })
+                .catch((error) => {
+                    console.error('[SW] 알림 표시 실패:', error);
+                })
         );
     });
 
