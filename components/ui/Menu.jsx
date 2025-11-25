@@ -53,13 +53,19 @@ export default function Menu(props) {
     },
   ];
 
-  const isEnterprise = currentUser?.userType === 'enterprise';
-  const homeCategoryList = allHomeCategoryList.filter(item => {
-    if (item.userType === 'all') return true;
-    if (item.userType === 'individual' && !isEnterprise) return true;
-    return false;
-  });
+  const [homeCategoryList, setHomeCategoryList] = useState(allHomeCategoryList);
 
+  useEffect(() => {
+    // 클라이언트에서만 실행되도록 하여 Hydration 오류 방지
+    const isEnterprise = currentUser?.userType === 'enterprise';
+    const filteredList = allHomeCategoryList.filter(item => {
+      if (item.userType === 'all') return true;
+      if (item.userType === 'individual' && !isEnterprise) return true;
+      return false;
+    });
+    setHomeCategoryList(filteredList);
+  }, [currentUser]);
+  
   const onClickCategory = (item) => {
     if (homeCategory === item.label) {
       setHeaderSrc("");

@@ -29,6 +29,6 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
     "**/*.mts"
-, "app/page.jsx", "next.config.js", "components/ResumeBuilder.jsx"  ],
+, "app/page.jsx", "next.config.js", "components/ResumeBuilder.jsx", "app/profile/memo/page.tsx"  ],
   "exclude": ["node_modules"]
 }

@@ -49,6 +49,14 @@ export default function ProfilePage() {
       userType: 'all'
     },
     { 
+      icon: Calendar, 
+      label: '일정', 
+      href: '/profile/memo',
+      description: '스케줄과 할 일 관리',
+      gradient: 'from-purple-500 to-violet-600',
+      userType: 'all'
+    },
+    { 
       icon: Heart, 
       label: '찜목록', 
       href: '/profile/likes',

@@ -155,7 +155,8 @@ export default function ProfileLayoutContent({ children }: { children: React.Rea
   const allMenuItems = [
     { icon: Home, label: '홈', href: '/profile', userType: 'all' },
     { icon: MessageSquare, label: '이력서', href: '/profile/resume', userType: 'individual' }, // 👈 개인 회원 전용
-    { icon: Users, label: '프로필 수정', href: '/profile/edit', userType: 'all' },
+    // { icon: Users, label: '프로필 수정', href: '/profile/edit', userType: 'all' },
+    { icon: Notebook, label: '일정', href: '/profile/memo', userType: 'all' },
     { icon: Book, label: '찜목록', href: '/profile/likes', userType: 'all' },
     { icon: ClipboardPlus, label: '구인등록', href: '/profile/recruit', userType: 'enterprise' }, // 👈 기업 회원 전용
     { icon: Atom, label: '지원서', href: '/profile/applications', userType: 'individual' }, // 👈 개인 회원 전용

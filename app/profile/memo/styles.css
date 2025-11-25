@@ -1,0 +1,23 @@
+.memo-dialog {
+  pointer-events: auto !important;
+}
+
+.memo-dialog-content {
+  pointer-events: auto !important;
+}
+
+.memo-dialog-overlay {
+  pointer-events: auto !important;
+}
+
+.memo-calendar {
+  pointer-events: auto !important;
+}
+
+/* 모든 팝업 관련 요소들에 pointer-events 적용 */
+[role="dialog"],
+[role="dialog"] *,
+[data-state="open"],
+[data-state="open"] * {
+  pointer-events: auto !important;
+}
